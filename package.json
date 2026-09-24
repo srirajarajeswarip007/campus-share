@@ -1,0 +1,39 @@
+{
+  "name": "campus-share",
+  "version": "1.0.0",
+  "description": "Campus Resource Allocator MEAN stack application",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node tests/api.test.js",
+    "test:selenium:auth": "node tests/Person1_Auth.js",
+    "test:selenium:resources": "node tests/Person2_Resources.js",
+    "test:selenium:requests": "node tests/Person3_Requests.js",
+    "test:selenium:all": "node tests/Person1_Auth.js && node tests/Person2_Resources.js && node tests/Person3_Requests.js"
+  },
+  "keywords": [
+    "campus",
+    "resource-allocator",
+    "mean-stack",
+    "angularjs",
+    "express",
+    "mongodb",
+    "nodejs"
+  ],
+  "author": "CampusShare Team",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.3.1",
+    "multer": "^2.4.0"
+  },
+  "devDependencies": {
+    "selenium-webdriver": "^4.49.0"
+  }
+}
+

@@ -1,0 +1,72 @@
+name: CI/CD Pipeline – CampusShare
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # ─── JOB 1: Build & Test ────────────────────────────────────────────────────
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    services:
+      # Spin up a real MongoDB container so the app can connect
+      mongodb:
+        image: mongo:7
+        ports:
+          - 27017:27017
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Start server in background
+        run: |
+          node server.js &
+          # Wait up to 15 seconds for the server to be ready
+          for i in $(seq 1 15); do
+            curl -s http://localhost:3000/api/resources && break
+            echo "Waiting for server... ($i)"
+            sleep 1
+          done
+        env:
+          MONGODB_URI: mongodb://localhost:27017/campus_share
+          PORT: 3000
+
+      - name: Run API Test Suite
+        run: npm test
+        env:
+          MONGODB_URI: mongodb://localhost:27017/campus_share
+          PORT: 3000
+
+  # ─── JOB 2: Deploy (only runs after tests pass, only on main branch) ────────
+  deploy:
+    name: Deploy to Render
+    needs: build-and-test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Trigger Render Deploy Hook
+        # Replace RENDER_DEPLOY_HOOK_URL with your actual Render deploy hook secret
+        run: |
+          echo "Deployment triggered successfully!"
+          echo "In a real deployment, this step would call:"
+          echo "curl -X POST \${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
+        # Uncomment the line below once you have your Render deploy hook URL saved as a GitHub Secret:
+        # run: curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html ng-app="campusApp" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CampusShare - Campus Resource Allocator</title>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Main CSS Design System -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body ng-controller="MainController" ng-cloak>
+
+  <!-- Public Header (Shown on public pages / when logged out) -->
+  <header class="public-nav" ng-if="!isLoggedIn || currentPath === '/' || currentPath === '/login' || currentPath === '/register'">
+    <a href="#!/" class="brand-logo">
+      <i class="fa-solid fa-graduation-cap"></i>
+      <span>CampusShare</span>
+    </a>
+    <ul class="public-nav-links">
+      <li><a href="#!/" ng-class="{'active': currentPath === '/'}">Home</a></li>
+      <li><a href="#!/browse">Browse</a></li>
+      <li><a href="#!/about" ng-click="$event.preventDefault()">About Us</a></li>
+      <li><a href="#!/contact" ng-click="$event.preventDefault()">Contact</a></li>
+    </ul>
+    <div class="nav-actions" ng-if="!isLoggedIn">
+      <a href="#!/login" class="btn btn-secondary btn-sm">Login</a>
+      <a href="#!/register" class="btn btn-primary btn-sm">Join Community</a>
+    </div>
+    <div class="nav-actions" ng-if="isLoggedIn">
+      <a href="#!/dashboard" class="btn btn-primary btn-sm" ng-if="currentUser.role === 'Student'">My Dashboard</a>
+      <a href="#!/admin-dashboard" class="btn btn-primary btn-sm" ng-if="currentUser.role === 'Admin'">Admin Panel</a>
+    </div>
+  </header>
+
+  <!-- Single Layout Wrapper -->
+  <div ng-class="{'app-container': isLoggedIn && currentPath !== '/' && currentPath !== '/login' && currentPath !== '/register'}">
+    
+    <!-- Left Navigation Sidebar -->
+    <aside class="sidebar" ng-if="isLoggedIn && currentPath !== '/' && currentPath !== '/login' && currentPath !== '/register'">
+      <div class="sidebar-header">
+        <i class="fa-solid fa-graduation-cap" style="font-size: 1.5rem; color: #00875A;"></i>
+        <h2>CampusShare</h2>
+      </div>
+
+      <!-- Student Menu -->
+      <ul class="sidebar-menu" ng-if="currentUser.role === 'Student'">
+        <li>
+          <a href="#!/dashboard" ng-class="{'active': currentPath === '/dashboard'}">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="#!/browse" ng-class="{'active': currentPath === '/browse' || currentPath.indexOf('/resource/') === 0}">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <span>Browse Resources</span>
+          </a>
+        </li>
+        <li>
+          <a href="#!/my-resources" ng-class="{'active': currentPath === '/my-resources'}">
+            <i class="fa-solid fa-box-archive"></i>
+            <span>My Resources</span>
+          </a>
+        </li>
+        <li>
+          <a href="#!/my-requests" ng-class="{'active': currentPath === '/my-requests'}">
+            <i class="fa-solid fa-hand-holding-hand"></i>
+            <span>My Requests</span>
+          </a>
+        </li>
+        <li>
+          <a href="#!/notifications" ng-class="{'active': currentPath === '/notifications'}">
+            <i class="fa-solid fa-bell"></i>
+            <span>Notifications</span>
+          </a>
+        </li>
+        <li>
+          <a href="#!/profile" ng-class="{'active': currentPath === '/profile'}">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+          </a>
+        </li>
+        <li>
+          <a href="#!/settings" ng-class="{'active': currentPath === '/settings'}">
+            <i class="fa-solid fa-gear"></i>
+            <span>Settings</span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Admin Menu -->
+      <ul class="sidebar-menu" ng-if="currentUser.role === 'Admin'">
+        <li>
+          <a href="#!/admin-dashboard" ng-class="{'active': currentPath === '/admin-dashboard'}">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Admin Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="#!/browse" ng-class="{'active': currentPath === '/browse'}">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <span>Browse Resources</span>
+          </a>
+        </li>
+        <li>
+          <a href="#!/admin/users" ng-class="{'active': currentPath === '/admin/users'}">
+            <i class="fa-solid fa-users"></i>
+            <span>Manage Users</span>
+          </a>
+        </li>
+        <li>
+          <a href="#!/admin/resources" ng-class="{'active': currentPath === '/admin/resources'}">
+            <i class="fa-solid fa-boxes-stacked"></i>
+            <span>Manage Resources</span>
+          </a>
+        </li>
+        <li>
+          <a href="#!/admin/complaints" ng-class="{'active': currentPath === '/admin/complaints'}">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <span>Reports & Compliance</span>
+          </a>
+        </li>
+        <li>
+          <a href="#!/admin/settings" ng-class="{'active': currentPath === '/admin/settings'}">
+            <i class="fa-solid fa-sliders"></i>
+            <span>Admin Settings</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <button class="sidebar-logout" ng-click="logout()">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main ng-class="{'main-content': isLoggedIn && currentPath !== '/' && currentPath !== '/login' && currentPath !== '/register'}">
+      <!-- Topbar Header -->
+      <header class="topbar" ng-if="isLoggedIn && currentPath !== '/' && currentPath !== '/login' && currentPath !== '/register'">
+        <div class="topbar-title">
+          <span ng-if="currentPath === '/dashboard'">Overview Dashboard</span>
+          <span ng-if="currentPath === '/browse'">Campus Resource Catalog</span>
+          <span ng-if="currentPath.indexOf('/resource/') === 0">Resource Overview</span>
+          <span ng-if="currentPath === '/my-resources'">My Uploaded Resources</span>
+          <span ng-if="currentPath === '/my-requests'">Track Resource Requests</span>
+          <span ng-if="currentPath === '/notifications'">Alert Notifications</span>
+          <span ng-if="currentPath === '/profile'">My Campus Profile</span>
+          <span ng-if="currentPath === '/settings'">User Preferences</span>
+          <span ng-if="currentPath === '/admin-dashboard'">Overview Dashboard</span>
+          <span ng-if="currentPath === '/admin/users'">Manage User Directory</span>
+          <span ng-if="currentPath === '/admin/resources'">Global Resource Catalog</span>
+          <span ng-if="currentPath === '/admin/complaints'">Reports & Compliance Board</span>
+          <span ng-if="currentPath === '/admin/settings'">System Preferences</span>
+        </div>
+
+        <div class="topbar-user">
+          <div class="user-badge">
+            <img ng-src="{{currentUser.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80'}}" alt="Avatar" class="user-avatar">
+            <div class="user-details">
+              <span class="user-name">{{currentUser.name}}</span>
+              <span class="user-role">{{currentUser.department || 'Campus Community'}} &bull; {{currentUser.role}}</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- SINGLE View Container for ALL Pages -->
+      <div class="page-container" ng-view></div>
+    </main>
+  </div>
+
+  <!-- AngularJS 1.8.2 Core & Modules -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-route.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-animate.min.js"></script>
+
+  <!-- App Core -->
+  <script src="js/app.js"></script>
+
+  <!-- AngularJS Services & Factories -->
+  <script src="js/services/AuthService.js"></script>
+  <script src="js/services/UserService.js"></script>
+  <script src="js/services/ResourceService.js"></script>
+  <script src="js/services/RequestService.js"></script>
+  <script src="js/services/NotificationService.js"></script>
+  <script src="js/services/ComplaintService.js"></script>
+
+  <!-- AngularJS Controllers -->
+  <script src="js/controllers/MainController.js"></script>
+  <script src="js/controllers/HomeController.js"></script>
+  <script src="js/controllers/AuthController.js"></script>
+  <script src="js/controllers/DashboardController.js"></script>
+  <script src="js/controllers/ResourceController.js"></script>
+  <script src="js/controllers/RequestController.js"></script>
+  <script src="js/controllers/NotificationController.js"></script>
+  <script src="js/controllers/ProfileController.js"></script>
+  <script src="js/controllers/ComplaintController.js"></script>
+  <script src="js/controllers/AdminController.js"></script>
+
+</body>
+</html>

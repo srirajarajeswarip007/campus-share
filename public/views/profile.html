@@ -1,0 +1,93 @@
+<div class="profile-view">
+  <div style="margin-bottom: 1.5rem;">
+    <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--text-dark);">My Campus Profile</h2>
+    <p style="font-size: 0.88rem; color: var(--text-muted);">Manage your academic identity, department credentials, and avatar.</p>
+  </div>
+
+  <div ng-if="statusMessage" class="badge badge-available" style="width: 100%; padding: 0.85rem 1rem; margin-bottom: 1.5rem; font-size: 0.9rem;">
+    <i class="fa-solid fa-circle-check"></i> {{statusMessage}}
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem;">
+    <!-- Profile Summary Card -->
+    <div class="card" style="text-align: center; padding: 2.5rem 1.5rem;">
+      <img ng-src="{{currentUser.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80'}}" alt="Avatar" style="width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary-light); margin: 0 auto 1rem;">
+      <h3 style="font-size: 1.3rem; font-weight: 800; color: var(--text-dark);">{{currentUser.name}}</h3>
+      <p style="font-size: 0.88rem; color: var(--primary); font-weight: 700;">{{currentUser.department}}</p>
+      <span class="badge badge-available" style="margin-top: 0.5rem;">{{currentUser.role}} &bull; {{currentUser.membershipStatus || 'Active Member'}}</span>
+
+      <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); text-align: left; font-size: 0.85rem; color: var(--text-muted);">
+        <div style="margin-bottom: 0.5rem;"><strong>Student ID:</strong> {{currentUser.studentId || 'N/A'}}</div>
+        <div style="margin-bottom: 0.5rem;"><strong>Email:</strong> {{currentUser.email}}</div>
+        <div><strong>Joined:</strong> {{currentUser.joinedDate | date:'mediumDate'}}</div>
+      </div>
+    </div>
+
+    <!-- Details / Edit Form Card -->
+    <div class="card">
+      <div class="card-header">
+        <h3><i class="fa-solid fa-user-pen" style="color: var(--primary); margin-right: 0.5rem;"></i> Profile Information</h3>
+        <button class="btn btn-secondary btn-sm" ng-click="toggleEdit()">
+          <i class="fa-solid" ng-class="{'fa-pen-to-square': !isEditing, 'fa-xmark': isEditing}"></i>
+          <span>{{isEditing ? 'Cancel Edit' : 'Edit Profile'}}</span>
+        </button>
+      </div>
+
+      <!-- READ ONLY VIEW -->
+      <div ng-if="!isEditing" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+        <div>
+          <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Full Name</label>
+          <p style="font-size: 1.05rem; font-weight: 600; color: var(--text-dark); margin-top: 0.2rem;">{{currentUser.name}}</p>
+        </div>
+
+        <div>
+          <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Email Address</label>
+          <p style="font-size: 1.05rem; font-weight: 600; color: var(--text-dark); margin-top: 0.2rem;">{{currentUser.email}}</p>
+        </div>
+
+        <div>
+          <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Student ID</label>
+          <p style="font-size: 1.05rem; font-weight: 600; color: var(--text-dark); margin-top: 0.2rem;">{{currentUser.studentId}}</p>
+        </div>
+
+        <div>
+          <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Academic Department</label>
+          <p style="font-size: 1.05rem; font-weight: 600; color: var(--text-dark); margin-top: 0.2rem;">{{currentUser.department}}</p>
+        </div>
+      </div>
+
+      <!-- INTERACTIVE EDIT PROFILE FORM (SAVING DIRECTLY TO MONGODB) -->
+      <form ng-if="isEditing" ng-submit="saveProfile()">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" class="form-control" ng-model="profileForm.name" required>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label>Student ID</label>
+            <input type="text" class="form-control" ng-model="profileForm.studentId" required>
+          </div>
+
+          <div class="form-group">
+            <label>Department</label>
+            <input type="text" class="form-control" ng-model="profileForm.department" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Avatar Photo URL</label>
+          <input type="url" class="form-control" ng-model="profileForm.avatarUrl" placeholder="https://images.unsplash.com/...">
+        </div>
+
+        <div style="margin-top: 1.5rem; display: flex; gap: 0.75rem; justify-content: flex-end;">
+          <button type="button" class="btn btn-secondary" ng-click="toggleEdit()">Cancel</button>
+          <button type="submit" class="btn btn-primary" ng-disabled="isLoading">
+            <span ng-if="!isLoading"><i class="fa-solid fa-floppy-disk"></i> Save Profile to MongoDB</span>
+            <span ng-if="isLoading"><i class="fa-solid fa-spinner fa-spin"></i> Saving...</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

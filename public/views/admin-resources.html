@@ -1,0 +1,60 @@
+<div class="admin-resources-view">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+    <div>
+      <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--text-dark);">Global Resource Catalog</h2>
+      <p style="font-size: 0.88rem; color: var(--text-muted);">Oversee, modify, or retire any listed resource across campus.</p>
+    </div>
+    <button class="btn btn-primary" ng-click="openAddResourceModal()">
+      <i class="fa-solid fa-plus"></i> Add New Resource
+    </button>
+  </div>
+
+  <div class="card">
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Resource</th>
+            <th>Category</th>
+            <th>Owner</th>
+            <th>Condition</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="item in resources">
+            <td>
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <img ng-src="{{item.imageUrl}}" alt="" style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover;">
+                <div>
+                  <strong>{{item.name}}</strong>
+                  <div style="font-size: 0.78rem; color: var(--text-muted);">{{item.location}}</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="resource-category">{{item.category}}</span></td>
+            <td>{{item.ownerName}}</td>
+            <td>{{item.condition}}</td>
+            <td>
+              <span class="badge" ng-class="{
+                'badge-available': item.availability === 'Available',
+                'badge-borrowed': item.availability === 'Borrowed'
+              }">{{item.availability}}</span>
+            </td>
+            <td>
+              <div style="display: flex; gap: 0.5rem;">
+                <button class="btn btn-secondary btn-sm" ng-click="openEditResourceModal(item)">
+                  <i class="fa-solid fa-pen-to-square"></i> Edit
+                </button>
+                <button class="btn btn-danger btn-sm" ng-click="deleteResource(item._id)">
+                  <i class="fa-solid fa-trash-can"></i> Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

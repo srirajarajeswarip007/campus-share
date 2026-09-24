@@ -1,0 +1,138 @@
+<div class="resource-detail-view" ng-if="selectedResource">
+  <div style="margin-bottom: 1.5rem;">
+    <a href="#!/browse" class="btn btn-secondary btn-sm"><i class="fa-solid fa-arrow-left"></i> Back to Resource Catalog</a>
+  </div>
+
+  <div class="card" style="padding: 2rem;">
+    <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 2.5rem; align-items: flex-start;">
+      
+      <!-- Resource Image Wrap -->
+      <div style="position: relative; border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border-color); background: #f8fafc;">
+        <img ng-src="{{selectedResource.imageUrl}}" alt="{{selectedResource.name}}" style="width: 100%; max-height: 380px; object-fit: cover;">
+        <span class="badge" style="position: absolute; top: 1rem; right: 1rem; font-size: 0.9rem; padding: 0.5rem 1rem;" ng-class="{
+          'badge-available': selectedResource.availability === 'Available',
+          'badge-borrowed': selectedResource.availability === 'Borrowed'
+        }">{{selectedResource.availability}}</span>
+      </div>
+
+      <!-- Details Body -->
+      <div>
+        <span class="resource-category" style="font-size: 0.85rem;">{{selectedResource.category}}</span>
+        <h1 style="font-size: 2rem; font-weight: 800; color: var(--text-dark); margin: 0.35rem 0 1rem;">{{selectedResource.name}}</h1>
+        
+        <p style="font-size: 0.98rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem;">
+          {{selectedResource.description}}
+        </p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; background: #f8fafc; padding: 1.25rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+          <div>
+            <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); display: block; text-transform: uppercase;">Resource Owner</span>
+            <strong style="font-size: 0.95rem; color: var(--text-dark);"><i class="fa-solid fa-user-tie"></i> {{selectedResource.ownerName}}</strong>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">{{selectedResource.ownerDepartment}}</div>
+          </div>
+
+          <div>
+            <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); display: block; text-transform: uppercase;">Condition</span>
+            <strong style="font-size: 0.95rem; color: var(--text-dark);"><i class="fa-solid fa-shield-check"></i> {{selectedResource.condition}}</strong>
+          </div>
+
+          <div>
+            <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); display: block; text-transform: uppercase;">Location / Hub</span>
+            <strong style="font-size: 0.95rem; color: var(--text-dark);"><i class="fa-solid fa-location-dot"></i> {{selectedResource.location}}</strong>
+          </div>
+
+          <div>
+            <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); display: block; text-transform: uppercase;">Borrow Terms</span>
+            <span style="font-size: 0.85rem; color: var(--text-dark);">7-day loan window</span>
+          </div>
+        </div>
+
+        <div class="agreement-box" style="margin-bottom: 1.5rem;">
+          <strong style="color: var(--primary); font-size: 0.9rem;"><i class="fa-solid fa-circle-info"></i> Borrowing Instructions:</strong>
+          <p style="margin-top: 0.35rem; font-size: 0.85rem;">{{selectedResource.borrowingInfo}}</p>
+        </div>
+
+        <!-- Request to Borrow Button -->
+        <button class="btn btn-primary" style="padding: 0.85rem 2rem; font-size: 1rem;" ng-click="openBorrowModal()" ng-disabled="selectedResource.availability !== 'Available'">
+          <i class="fa-solid fa-hand-holding"></i> Request to Borrow
+        </button>
+        <span ng-if="selectedResource.availability !== 'Available'" style="font-size: 0.85rem; color: #dc2626; margin-left: 1rem;">
+          Currently Unavailable for Borrowing
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- BORROW REQUEST & RESPONSIBILITY AGREEMENT MODAL -->
+  <div class="modal-overlay" ng-if="showBorrowModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-file-contract" style="color: var(--primary); margin-right: 0.5rem;"></i> Borrow Request Agreement</h3>
+        <button ng-click="closeBorrowModal()" style="background: none; font-size: 1.2rem; color: var(--text-muted);"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="modal-body">
+        <h4 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem;">Requesting: {{selectedResource.name}}</h4>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">Owner: {{selectedResource.ownerName}} ({{selectedResource.ownerDepartment}})</p>
+
+        <div ng-if="errorMessage" class="badge badge-damaged" style="width: 100%; padding: 0.75rem; margin-bottom: 1rem;">
+          <i class="fa-solid fa-circle-exclamation"></i> {{errorMessage}}
+        </div>
+
+        <div ng-if="successMessage" class="badge badge-available" style="width: 100%; padding: 0.75rem; margin-bottom: 1rem;">
+          <i class="fa-solid fa-circle-check"></i> {{successMessage}}
+        </div>
+
+        <form ng-submit="submitBorrowRequest()">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label>Borrow Date</label>
+              <input type="date" class="form-control" ng-model="borrowForm.borrowDate" required>
+            </div>
+            <div class="form-group">
+              <label>Expected Return Date</label>
+              <input type="date" class="form-control" ng-model="borrowForm.expectedReturnDate" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Purpose of Request</label>
+            <input type="text" class="form-control" ng-model="borrowForm.purpose" placeholder="e.g. Physics Lab Assignment 3 / Class Project" required>
+          </div>
+
+          <div class="form-group">
+            <label>Additional Notes (Optional)</label>
+            <textarea class="form-control" ng-model="borrowForm.notes" rows="2" placeholder="Mention pickup time or special requirements..."></textarea>
+          </div>
+
+          <!-- MANDATORY RESPONSIBILITY AGREEMENT BOX -->
+          <div class="agreement-box" style="background: #fff8f6; border-left-color: #ef4444;">
+            <h5 style="font-weight: 800; color: #b91c1c; margin-bottom: 0.5rem;"><i class="fa-solid fa-gavel"></i> Borrower Responsibility Terms & Agreement:</h5>
+            <ul style="font-size: 0.82rem; color: #475569; line-height: 1.5;">
+              <li><strong>Personal Liability:</strong> The borrower assumes full responsibility for the condition of the resource from pickup to return.</li>
+              <li><strong>Punctuality:</strong> The resource must be returned on or before the expected return date.</li>
+              <li><strong>Late Return Fine:</strong> Late returns will incur a standard penalty of <strong>$5 per day</strong>.</li>
+              <li><strong>Damage or Misuse:</strong> Loss, physical damage, or misuse will make the borrower financially responsible for repair or replacement.</li>
+              <li><strong>Accessories:</strong> All original cables, chargers, cases, and accessories included must be returned intact.</li>
+            </ul>
+          </div>
+
+          <div class="form-group" style="margin-top: 1rem;">
+            <label class="checkbox-label">
+              <input type="checkbox" ng-model="borrowForm.agreementAccepted" required>
+              <span>I have read, understood, and accept the CampusShare Borrower Responsibility Agreement.</span>
+            </label>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" ng-click="closeBorrowModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary" ng-disabled="!borrowForm.agreementAccepted || isLoading">
+              <span ng-if="!isLoading">Submit Borrow Request</span>
+              <span ng-if="isLoading"><i class="fa-solid fa-spinner fa-spin"></i> Submitting...</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

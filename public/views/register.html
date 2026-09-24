@@ -1,0 +1,82 @@
+<div class="auth-split-container">
+  <!-- Sidebar Banner -->
+  <div class="auth-sidebar-banner">
+    <div style="margin-bottom: 2rem;">
+      <i class="fa-solid fa-users" style="font-size: 3.5rem; color: #ffffff;"></i>
+    </div>
+    <h2 style="font-size: 2rem; font-weight: 800; margin-bottom: 1rem; color: #ffffff;">Join Our Campus Community Today!</h2>
+    <p style="font-size: 0.95rem; color: #cbd5e1; line-height: 1.6;">Share tools, textbooks, lab kits, and electronics with verified peers across departments.</p>
+  </div>
+
+  <!-- Form Section -->
+  <div class="auth-form-wrap">
+    <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--text-dark); margin-bottom: 0.35rem;">Create Your Account</h2>
+    <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.5rem;">Register to begin requesting and sharing resources.</p>
+
+    <div ng-if="errorMessage" class="badge badge-damaged" style="width: 100%; padding: 0.75rem 1rem; margin-bottom: 1.25rem; font-size: 0.88rem; justify-content: flex-start;">
+      <i class="fa-solid fa-circle-exclamation"></i>
+      <span>{{errorMessage}}</span>
+    </div>
+
+    <div ng-if="successMessage" class="badge badge-available" style="width: 100%; padding: 0.75rem 1rem; margin-bottom: 1.25rem; font-size: 0.88rem; justify-content: flex-start;">
+      <i class="fa-solid fa-circle-check"></i>
+      <span>{{successMessage}}</span>
+    </div>
+
+    <form ng-submit="register()">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" class="form-control" ng-model="registerData.name" placeholder="Srirach S" required>
+      </div>
+
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" class="form-control" ng-model="registerData.email" placeholder="student@campus.edu" required>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-group">
+          <label>Department</label>
+          <select class="form-control" ng-model="registerData.department" ng-options="dept for dept in departments" required></select>
+        </div>
+
+        <div class="form-group">
+          <label>Student ID</label>
+          <input type="text" class="form-control" ng-model="registerData.studentId" placeholder="22IT104" required>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" class="form-control" ng-model="registerData.password" placeholder="••••••••" required>
+        </div>
+
+        <div class="form-group">
+          <label>Confirm Password</label>
+          <input type="password" class="form-control" ng-model="registerData.confirmPassword" placeholder="••••••••" required>
+        </div>
+      </div>
+
+      <!-- Live Registration Preview Card showing built-in uppercase & lowercase filters -->
+      <div class="preview-box">
+        <h5><i class="fa-solid fa-eye"></i> Live Registration Preview (AngularJS Filters)</h5>
+        <div style="font-size: 0.85rem; color: var(--text-dark); display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+          <div><strong>Name (uppercase):</strong> {{ (registerData.name || 'YOUR NAME') | uppercase }}</div>
+          <div><strong>Email (lowercase):</strong> {{ (registerData.email || 'your.email@campus.edu') | lowercase }}</div>
+          <div><strong>Dept (uppercase):</strong> {{ (registerData.department || 'N/A') | uppercase }}</div>
+          <div><strong>Student ID:</strong> {{ registerData.studentId || 'N/A' }}</div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem;" ng-disabled="isLoading">
+        <span ng-if="!isLoading">Register Account</span>
+        <span ng-if="isLoading"><i class="fa-solid fa-spinner fa-spin"></i> Saving to Database...</span>
+      </button>
+    </form>
+
+    <p style="text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-top: 1.5rem;">
+      Already have an account? <a href="#!/login" style="font-weight: 700;">Login Here</a>
+    </p>
+  </div>
+</div>

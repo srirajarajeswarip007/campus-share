@@ -1,0 +1,95 @@
+<div class="home-view">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <span class="badge badge-available" style="margin-bottom: 1rem; font-size: 0.85rem;">FALL 2026 SEMESTER</span>
+      <h1>Share More.<br>Borrow Smarter.<br>Build Together.</h1>
+      <p>A community store platform for students to share, borrow, and manage campus resources. From lab gear to textbooks, let's optimize campus life.</p>
+      
+      <form class="search-box-wrap" ng-submit="onSearch()" style="display: flex; gap: 0.5rem; max-width: 480px;">
+        <input type="text" class="form-control" ng-model="searchQuery" placeholder="Search for books, equipment, cameras..." style="border-radius: 20px; padding-left: 1.25rem;">
+        <button type="submit" class="btn btn-primary">Search</button>
+      </form>
+    </div>
+    
+    <div class="hero-card">
+      <div style="text-align: center; margin-bottom: 1rem;">
+        <i class="fa-solid fa-layer-group" style="font-size: 3.5rem; color: #00875A;"></i>
+      </div>
+      <h3 style="font-size: 1.25rem; font-weight: 700; text-align: center; margin-bottom: 0.5rem; color: #fff;">Instant Campus Access</h3>
+      <p style="font-size: 0.88rem; color: #cbd5e1; text-align: center;">Verified student-to-student sharing with automated accountability, loan tracking, and instant alerts.</p>
+    </div>
+  </section>
+
+  <!-- Feature Cards Grid -->
+  <section style="margin-bottom: 3.5rem;">
+    <h2 style="font-size: 1.6rem; font-weight: 800; text-align: center; margin-bottom: 2rem;">Why Use CampusShare?</h2>
+    
+    <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr);">
+      <div class="card" style="text-align: center; padding: 2rem 1.5rem;">
+        <div style="width: 60px; height: 60px; border-radius: 50%; background: #dcfce7; color: #00875A; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; margin: 0 auto 1.25rem;">
+          <i class="fa-solid fa-users-shield"></i>
+        </div>
+        <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem;">Trusted Community</h3>
+        <p style="font-size: 0.88rem; color: var(--text-muted);">Verified campus profiles ensure every exchange is handled inside a safe academic network.</p>
+      </div>
+
+      <div class="card" style="text-align: center; padding: 2rem 1.5rem;">
+        <div style="width: 60px; height: 60px; border-radius: 50%; background: #e0f2fe; color: #0284c7; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; margin: 0 auto 1.25rem;">
+          <i class="fa-solid fa-handshake-simple"></i>
+        </div>
+        <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem;">Easy & Convenient</h3>
+        <p style="font-size: 0.88rem; color: var(--text-muted);">Free, simple, and peer-to-peer borrowing. Reserve what you need when you need it without expensive store purchases.</p>
+      </div>
+
+      <div class="card" style="text-align: center; padding: 2rem 1.5rem;">
+        <div style="width: 60px; height: 60px; border-radius: 50%; background: #fef3c7; color: #d97706; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; margin: 0 auto 1.25rem;">
+          <i class="fa-solid fa-leaf"></i>
+        </div>
+        <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem;">Sustainable Campus</h3>
+        <p style="font-size: 0.88rem; color: var(--text-muted);">Reduce waste and maximize reuse by sharing existing items across departments on campus.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Video & Audio Section -->
+  <section style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 2rem; margin-bottom: 3rem;">
+    <!-- How CampusShare Works Video -->
+    <div class="card">
+      <div class="card-header">
+        <h3><i class="fa-solid fa-circle-play" style="color: var(--primary); margin-right: 0.5rem;"></i>Peaceful Study Audio</h3>
+        <span class="badge badge-available">Pleasant Music</span>
+      </div>
+      <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: var(--radius-sm); background: #000;">
+        <iframe src="https://www.youtube.com/embed/R1r9nLYcqBU" title="CampusShare Guide" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" allowfullscreen></iframe>
+      </div>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.75rem;">Peaceful music , perfect for study time</p>
+    </div>
+
+    <!-- Peaceful Study Audio Player -->
+    <div class="card audio-player-card">
+      <div class="card-header">
+        <h3><i class="fa-solid fa-music" style="color: var(--primary); margin-right: 0.5rem;"></i> Peaceful Study Music Player</h3>
+        <span class="badge badge-returned">Ambient Audio</span>
+      </div>
+      <div style="text-align: center; padding: 1rem 0;">
+        <div style="width: 80px; height: 80px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 2.2rem;">
+          <i class="fa-solid fa-headphones"></i>
+        </div>
+        <h4 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.25rem;">Lofi Study Chill Beats</h4>
+        <p style="font-size: 0.82rem; color: var(--text-muted);">Calming ambient background soundtrack for focused studying.</p>
+
+        <div class="audio-controls" style="justify-content: center; margin-top: 1.5rem;">
+          <button class="audio-btn" ng-click="toggleAudio()">
+            <i class="fa-solid" ng-class="{'fa-play': !isPlayingAudio, 'fa-pause': isPlayingAudio}"></i>
+          </button>
+          <div style="display: flex; align-items: center; gap: 0.5rem; width: 140px;">
+            <i class="fa-solid fa-volume-low" style="color: var(--text-muted); font-size: 0.9rem;"></i>
+            <input type="range" min="0" max="1" step="0.05" ng-model="audioVolume" ng-change="updateVolume()" style="width: 100%; accent-color: var(--primary);">
+            <i class="fa-solid fa-volume-high" style="color: var(--text-muted); font-size: 0.9rem;"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

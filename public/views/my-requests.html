@@ -1,0 +1,134 @@
+<div class="my-requests-view">
+  <div style="margin-bottom: 1.5rem;">
+    <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--text-dark);">Track Borrow Requests</h2>
+    <p style="font-size: 0.88rem; color: var(--text-muted);">Monitor borrowing requests, track return deadlines, and record resource returns.</p>
+  </div>
+
+  <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-dark);">My Borrow Requests</h3>
+  <div class="card">
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Resource Name</th>
+            <th>Owner</th>
+            <th>Borrow Date</th>
+            <th>Expected Return</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="req in requests" ng-if="req.borrowerId === currentUser.id">
+            <td><strong>{{req.resourceName}}</strong></td>
+            <td>{{req.ownerId === currentUser.id ? 'Self' : (req.ownerName || 'Admin')}}</td>
+            <td>{{req.borrowDate | date:'mediumDate'}}</td>
+            <td>{{req.expectedReturnDate | date:'mediumDate'}}</td>
+            <td>
+              <span class="badge" ng-class="{
+                'badge-approved': req.status === 'Approved' || req.status === 'Borrowed',
+                'badge-pending': req.status === 'Pending',
+                'badge-returned': req.status === 'Returned',
+                'badge-rejected': req.status === 'Rejected'
+              }">{{req.status}}</span>
+            </td>
+            <td>
+              <div style="display: flex; gap: 0.5rem;">
+                <button class="btn btn-primary btn-sm" ng-if="req.status === 'Approved' || req.status === 'Borrowed'" ng-click="returnResource(req)">
+                  <i class="fa-solid fa-rotate-left"></i> Return Item
+                </button>
+                <button class="btn btn-secondary btn-sm" ng-click="openReportModal(req)">
+                  <i class="fa-solid fa-triangle-exclamation" style="color: #dc2626;"></i> Report Issue
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr ng-if="(requests | filter:{borrowerId: currentUser.id}).length === 0">
+            <td colspan="6" style="text-align: center; color: var(--text-muted);">You have not made any borrow requests yet.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <h3 style="font-size: 1.25rem; font-weight: 700; margin-top: 2rem; margin-bottom: 1rem; color: var(--text-dark);">Requests for My Resources</h3>
+  <div class="card">
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Resource Name</th>
+            <th>Borrower</th>
+            <th>Purpose</th>
+            <th>Requested Dates</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="req in requests" ng-if="req.ownerId === currentUser.id && req.borrowerId !== currentUser.id">
+            <td><strong>{{req.resourceName}}</strong></td>
+            <td>{{req.borrowerName}}<br><small style="color: var(--text-muted);">{{req.borrowerEmail}}</small></td>
+            <td>{{req.purpose}}</td>
+            <td>{{req.borrowDate | date:'mediumDate'}} - {{req.expectedReturnDate | date:'mediumDate'}}</td>
+            <td>
+              <span class="badge" ng-class="{
+                'badge-approved': req.status === 'Approved' || req.status === 'Borrowed',
+                'badge-pending': req.status === 'Pending',
+                'badge-returned': req.status === 'Returned',
+                'badge-rejected': req.status === 'Rejected'
+              }">{{req.status}}</span>
+            </td>
+            <td>
+              <div style="display: flex; gap: 0.5rem;" ng-if="req.status === 'Pending'">
+                <button class="btn btn-primary btn-sm" ng-click="approveRequest(req)">
+                  <i class="fa-solid fa-check"></i> Approve
+                </button>
+                <button class="btn btn-danger btn-sm" ng-click="rejectRequest(req)">
+                  <i class="fa-solid fa-xmark"></i> Decline
+                </button>
+              </div>
+              <div style="display: flex; gap: 0.5rem;" ng-if="req.status !== 'Pending'">
+                 <span style="font-size: 0.85rem; color: var(--text-muted);">No actions available</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- COMPLAINT / REPORT ISSUE MODAL -->
+  <div class="modal-overlay" ng-if="showComplaintModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-triangle-exclamation" style="color: #dc2626; margin-right: 0.5rem;"></i> Report Issue to Compliance</h3>
+        <button ng-click="closeReportModal()" style="background: none; font-size: 1.2rem; color: var(--text-muted);"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="modal-body">
+        <form ng-submit="submitComplaint()">
+          <div class="form-group">
+            <label>Report Title</label>
+            <input type="text" class="form-control" ng-model="complaintForm.title" required>
+          </div>
+
+          <div class="form-group">
+            <label>Issue Category</label>
+            <select class="form-control" ng-model="complaintForm.category" ng-options="cat for cat in complaintCategories" required></select>
+          </div>
+
+          <div class="form-group">
+            <label>Detailed Description</label>
+            <textarea class="form-control" ng-model="complaintForm.description" rows="4" placeholder="Explain the damage, delay, or dispute details clearly..." required></textarea>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" ng-click="closeReportModal()">Cancel</button>
+            <button type="submit" class="btn btn-danger">Submit Report</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

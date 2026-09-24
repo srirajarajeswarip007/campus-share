@@ -1,0 +1,116 @@
+<div class="admin-users-view">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+    <div>
+      <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--text-dark);">Manage User Directory</h2>
+      <p style="font-size: 0.88rem; color: var(--text-muted);">Review, edit, create, or remove student and faculty user accounts in MongoDB.</p>
+    </div>
+    <button class="btn btn-primary" ng-click="openAddUserModal()">
+      <i class="fa-solid fa-user-plus"></i> Add User
+    </button>
+  </div>
+
+  <div class="card">
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>User Profile</th>
+            <th>Email Address</th>
+            <th>Department / ID</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="u in users">
+            <td>
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <img ng-src="{{u.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80'}}" alt="" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover;">
+                <div>
+                  <strong>{{u.name}}</strong>
+                  <div style="font-size: 0.75rem; color: var(--text-muted);">Joined {{u.joinedDate | date:'shortDate'}}</div>
+                </div>
+              </div>
+            </td>
+            <td>{{u.email}}</td>
+            <td>{{u.department}} ({{u.studentId}})</td>
+            <td>
+              <span class="badge" ng-class="{'badge-available': u.role === 'Admin', 'badge-returned': u.role === 'Student'}">{{u.role}}</span>
+            </td>
+            <td><span class="badge badge-available">Active</span></td>
+            <td>
+              <div style="display: flex; gap: 0.5rem;">
+                <button class="btn btn-secondary btn-sm" ng-click="openEditUserModal(u)">
+                  <i class="fa-solid fa-pen-to-square"></i> Edit
+                </button>
+                <button class="btn btn-danger btn-sm" ng-click="deleteUser(u._id)" ng-if="u.email !== 'admin@campus.edu'">
+                  <i class="fa-solid fa-trash-can"></i> Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ADD / EDIT USER MODAL -->
+  <div class="modal-overlay" ng-if="showUserModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-user-gear" style="color: var(--primary); margin-right: 0.5rem;"></i> {{isEditingUser ? 'Edit User Account' : 'Add New User Account'}}</h3>
+        <button ng-click="closeUserModal()" style="background: none; font-size: 1.2rem; color: var(--text-muted);"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="modal-body">
+        <form ng-submit="saveUser()">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" class="form-control" ng-model="userForm.name" required>
+          </div>
+
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" class="form-control" ng-model="userForm.email" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label>Department</label>
+              <input type="text" class="form-control" ng-model="userForm.department" required>
+            </div>
+
+            <div class="form-group">
+              <label>Student / Staff ID</label>
+              <input type="text" class="form-control" ng-model="userForm.studentId" required>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label>Role</label>
+              <select class="form-control" ng-model="userForm.role" required>
+                <option value="Student">Student</option>
+                <option value="Admin">Admin</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Password {{isEditingUser ? '(Leave blank to keep current)' : ''}}</label>
+              <input type="password" class="form-control" ng-model="userForm.password" ng-required="!isEditingUser">
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" ng-click="closeUserModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary" ng-disabled="isLoading">
+              <span ng-if="!isLoading">{{isEditingUser ? 'Save Changes' : 'Create User'}}</span>
+              <span ng-if="isLoading"><i class="fa-solid fa-spinner fa-spin"></i> Processing...</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

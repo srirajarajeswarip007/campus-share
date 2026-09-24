@@ -1,0 +1,127 @@
+<div class="my-resources-view">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+    <div>
+      <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--text-dark);">My Uploaded Resources</h2>
+      <p style="font-size: 0.88rem; color: var(--text-muted);">Manage resources you are sharing with the campus community.</p>
+    </div>
+    <button class="btn btn-primary" ng-click="openAddResourceModal()">
+      <i class="fa-solid fa-plus"></i> Add New Resource
+    </button>
+  </div>
+
+  <!-- Resource Table Card -->
+  <div class="card">
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Resource</th>
+            <th>Category</th>
+            <th>Condition</th>
+            <th>Location</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="item in resources | filter:{ownerId: currentUser.id}">
+            <td>
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <img ng-src="{{item.imageUrl}}" alt="" style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover;">
+                <div>
+                  <strong>{{item.name}}</strong>
+                  <div style="font-size: 0.78rem; color: var(--text-muted);">Added {{item.createdAt | date:'shortDate'}}</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="resource-category">{{item.category}}</span></td>
+            <td>{{item.condition}}</td>
+            <td>{{item.location}}</td>
+            <td>
+              <span class="badge" ng-class="{
+                'badge-available': item.availability === 'Available',
+                'badge-borrowed': item.availability === 'Borrowed'
+              }">{{item.availability}}</span>
+            </td>
+            <td>
+              <div style="display: flex; gap: 0.5rem;">
+                <button class="btn btn-secondary btn-sm" ng-click="openEditResourceModal(item)">
+                  <i class="fa-solid fa-pen-to-square"></i> Edit
+                </button>
+                <button class="btn btn-danger btn-sm" ng-click="deleteResource(item._id)">
+                  <i class="fa-solid fa-trash-can"></i> Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ADD / EDIT RESOURCE MODAL -->
+  <div class="modal-overlay" ng-if="showResourceModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>
+          <i class="fa-solid fa-box-archive" style="color: var(--primary); margin-right: 0.5rem;"></i> 
+          {{isEditingResource ? 'Edit Resource' : 'Add New Campus Resource'}}
+        </h3>
+        <button ng-click="closeResourceModal()" style="background: none; font-size: 1.2rem; color: var(--text-muted);"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="modal-body">
+        <form ng-submit="saveResource()">
+          <div class="form-group">
+            <label>Resource Name</label>
+            <input type="text" class="form-control" ng-model="resourceForm.name" placeholder="e.g. TI-84 Plus CE Calculator" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label>Category</label>
+              <select class="form-control" ng-model="resourceForm.category" ng-options="cat for cat in categories" required></select>
+            </div>
+
+            <div class="form-group">
+              <label>Condition</label>
+              <select class="form-control" ng-model="resourceForm.condition" ng-options="cond for cond in conditions" required></select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Description</label>
+            <textarea class="form-control" ng-model="resourceForm.description" rows="3" placeholder="Provide details, included accessories, or usage guidelines..." required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Borrowing Instructions</label>
+            <input type="text" class="form-control" ng-model="resourceForm.borrowingInfo" placeholder="e.g. Max 7-day loan window. Handle glass optics carefully.">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label>Location / Pickup Hub</label>
+              <input type="text" class="form-control" ng-model="resourceForm.location" placeholder="e.g. Main Library Room 204">
+            </div>
+
+            <div class="form-group">
+              <label>Image Upload or URL</label>
+              <input type="file" id="resourceImageFile" accept="image/*" class="form-control" style="padding-top: 5px; margin-bottom: 0.5rem;">
+              <span style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 0.5rem; text-align: center;">OR provide a link</span>
+              <input type="url" class="form-control" ng-model="resourceForm.imageUrl" placeholder="https://images.unsplash.com/...">
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" ng-click="closeResourceModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary" ng-disabled="isLoading">
+              <span ng-if="!isLoading">{{isEditingResource ? 'Save Changes' : 'Add Resource'}}</span>
+              <span ng-if="isLoading"><i class="fa-solid fa-spinner fa-spin"></i> Saving...</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

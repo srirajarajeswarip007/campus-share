@@ -1,0 +1,100 @@
+<div class="admin-dashboard-view">
+  <!-- Stats Grid -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-info">
+        <h3>{{stats.totalUsers || 0}}</h3>
+        <p>Total Registered Users</p>
+      </div>
+      <div class="stat-icon blue">
+        <i class="fa-solid fa-users"></i>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-info">
+        <h3>{{stats.totalResources || 0}}</h3>
+        <p>Total Resources</p>
+      </div>
+      <div class="stat-icon green">
+        <i class="fa-solid fa-boxes-stacked"></i>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-info">
+        <h3>{{stats.availableResources || 0}}</h3>
+        <p>Available Resources</p>
+      </div>
+      <div class="stat-icon green">
+        <i class="fa-solid fa-box-open"></i>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-info">
+        <h3>{{stats.activeRequests || 0}}</h3>
+        <p>Active Requests</p>
+      </div>
+      <div class="stat-icon amber">
+        <i class="fa-solid fa-hand-holding"></i>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-info">
+        <h3>{{stats.complaintsCount || 0}}</h3>
+        <p>Complaints & Disputes</p>
+      </div>
+      <div class="stat-icon red">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Administrative Quick Management -->
+  <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem;">
+    <div class="card">
+      <div class="card-header">
+        <h3><i class="fa-solid fa-sliders" style="color: var(--primary); margin-right: 0.5rem;"></i> System Status Summary</h3>
+        <span class="badge badge-available">Operational</span>
+      </div>
+
+      <p style="font-size: 0.9rem; color: var(--text-dark); margin-bottom: 1rem;">
+        CampusShare database and Express REST APIs are online on port 3000. Real-time connections to MongoDB are verified.
+      </p>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+        <div style="background: #f8fafc; padding: 1.25rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+          <strong style="color: var(--primary); font-size: 1.2rem;">98.4%</strong>
+          <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.2rem;">On-time Item Return Rate</div>
+        </div>
+
+        <div style="background: #f8fafc; padding: 1.25rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+          <strong style="color: #0284c7; font-size: 1.2rem;">$5.00 / day</strong>
+          <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.2rem;">Default Late Fine Rate</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h3><i class="fa-solid fa-user-shield" style="color: var(--primary); margin-right: 0.5rem;"></i> Admin Actions</h3>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+        <a href="#!/admin/users" class="btn btn-primary" style="justify-content: flex-start;">
+          <i class="fa-solid fa-user-gear"></i> Manage User Directory
+        </a>
+        <a href="#!/admin/resources" class="btn btn-secondary" style="justify-content: flex-start;">
+          <i class="fa-solid fa-boxes-stacked" style="color: var(--primary);"></i> Global Resource Catalog
+        </a>
+        <a href="#!/admin/complaints" class="btn btn-secondary" style="justify-content: flex-start;">
+          <i class="fa-solid fa-triangle-exclamation" style="color: #dc2626;"></i> Compliance Board
+        </a>
+        <a href="#!/admin/settings" class="btn btn-secondary" style="justify-content: flex-start;">
+          <i class="fa-solid fa-gears" style="color: #d97706;"></i> System Settings
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,75 @@
+<div class="browse-view">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--text-dark);">Browse Campus Resources</h2>
+      <p style="font-size: 0.88rem; color: var(--text-muted);">Explore academic books, electronics, lab kits, and photography gear available for borrowing.</p>
+    </div>
+    <a href="#!/my-resources" class="btn btn-primary btn-sm">
+      <i class="fa-solid fa-plus"></i> Add New Resource
+    </a>
+  </div>
+
+  <!-- Search & Filter Controls -->
+  <div class="card" style="padding: 1.25rem; margin-bottom: 2rem;">
+    <div style="display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 1rem; align-items: center;">
+      <div>
+        <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">SEARCH</label>
+        <input type="text" class="form-control" ng-model="searchQuery" ng-change="loadResources()" placeholder="Search title, description, or tags...">
+      </div>
+
+      <div>
+        <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">CATEGORY</label>
+        <select class="form-control" ng-model="selectedCategory" ng-change="loadResources()" ng-options="cat for cat in categories"></select>
+      </div>
+
+      <div>
+        <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">AVAILABILITY</label>
+        <select class="form-control" ng-model="selectedAvailability" ng-change="loadResources()" ng-options="avail for avail in availabilities"></select>
+      </div>
+
+      <div style="align-self: flex-end;">
+        <button class="btn btn-secondary" ng-click="searchQuery = ''; selectedCategory = 'All'; selectedAvailability = 'All'; loadResources();">
+          <i class="fa-solid fa-rotate-left"></i> Reset
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div ng-if="isLoading" style="text-align: center; padding: 3rem;">
+    <i class="fa-solid fa-spinner fa-spin" style="font-size: 2.5rem; color: var(--primary);"></i>
+    <p style="margin-top: 1rem; color: var(--text-muted);">Fetching live items from MongoDB...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div ng-if="!isLoading && resources.length === 0" class="card" style="text-align: center; padding: 3.5rem;">
+    <i class="fa-solid fa-box-open" style="font-size: 3.5rem; color: #cbd5e1; margin-bottom: 1rem;"></i>
+    <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--text-dark);">No resources found</h3>
+    <p style="font-size: 0.88rem; color: var(--text-muted);">Try adjusting your search term or category filters.</p>
+  </div>
+
+  <!-- Resource Cards Grid -->
+  <div class="resources-grid" ng-if="!isLoading && resources.length > 0">
+    <div class="resource-card" ng-repeat="item in resources | orderBy:'-createdAt'">
+      <div class="resource-img-wrap">
+        <img ng-src="{{item.imageUrl}}" alt="{{item.name}}">
+        <span class="resource-badge badge" ng-class="{
+          'badge-available': item.availability === 'Available',
+          'badge-borrowed': item.availability === 'Borrowed',
+          'badge-damaged': item.availability === 'Maintenance'
+        }">{{item.availability}}</span>
+      </div>
+
+      <div class="resource-body">
+        <span class="resource-category">{{item.category}}</span>
+        <h4 class="resource-title">{{item.name}}</h4>
+        <p class="resource-desc">{{item.description}}</p>
+
+        <div class="resource-footer">
+          <span class="resource-owner"><i class="fa-solid fa-user-circle"></i> {{item.ownerName}}</span>
+          <button class="btn btn-primary btn-sm" ng-click="viewDetails(item)">View Details</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

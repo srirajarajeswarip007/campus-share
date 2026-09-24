@@ -1,0 +1,38 @@
+<div class="notifications-view">
+  <div style="margin-bottom: 1.5rem;">
+    <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--text-dark);">Alert Notifications</h2>
+    <p style="font-size: 0.88rem; color: var(--text-muted);">Real-time updates regarding your borrow requests, approval status, and due reminders.</p>
+  </div>
+
+  <div class="card" style="padding: 0;">
+    <div ng-if="isLoading" style="text-align: center; padding: 2.5rem;">
+      <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary);"></i>
+    </div>
+
+    <div ng-if="!isLoading && notifications.length === 0" style="text-align: center; padding: 3.5rem; color: var(--text-muted);">
+      <i class="fa-solid fa-bell-slash" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1rem;"></i>
+      <p>You have no notifications at this time.</p>
+    </div>
+
+    <div class="notification-item" ng-repeat="n in notifications" ng-class="{'unread': !n.isRead}">
+      <div class="notification-icon">
+        <i class="fa-solid" ng-class="{
+          'fa-hand-holding': n.type === 'request',
+          'fa-circle-check': n.type === 'approval',
+          'fa-circle-xmark': n.type === 'rejection',
+          'fa-rotate-left': n.type === 'return'
+        }"></i>
+      </div>
+
+      <div style="flex: 1;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <strong style="font-size: 0.95rem; color: var(--text-dark);">{{n.title}}</strong>
+          <span style="font-size: 0.78rem; color: var(--text-muted);">{{n.createdAt | date:'short'}}</span>
+        </div>
+        <p style="font-size: 0.88rem; color: var(--text-dark); margin-top: 0.2rem;">{{n.message}}</p>
+      </div>
+
+      <button class="btn btn-secondary btn-sm" ng-if="!n.isRead" ng-click="markRead(n)">Mark Read</button>
+    </div>
+  </div>
+</div>

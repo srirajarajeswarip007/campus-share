@@ -1,0 +1,42 @@
+<div class="settings-view">
+  <div style="margin-bottom: 1.5rem;">
+    <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--text-dark);">User Preferences & Settings</h2>
+    <p style="font-size: 0.88rem; color: var(--text-muted);">Configure notifications, privacy, and display options.</p>
+  </div>
+
+  <div class="card" style="max-width: 800px;">
+    <div class="card-header">
+      <h3><i class="fa-solid fa-bell" style="color: var(--primary); margin-right: 0.5rem;"></i> Notification Preferences</h3>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+      <label class="checkbox-label">
+        <input type="checkbox" ng-model="settings.emailNotifications">
+        <div>
+          <strong>Email Request Updates</strong>
+          <p style="font-size: 0.82rem; color: var(--text-muted);">Receive instant emails when your request is approved or rejected.</p>
+        </div>
+      </label>
+
+      <label class="checkbox-label">
+        <input type="checkbox" ng-model="settings.dueReminders">
+        <div>
+          <strong>Due Date Reminders</strong>
+          <p style="font-size: 0.82rem; color: var(--text-muted);">Get alert notifications 24 hours before a borrowed item is due.</p>
+        </div>
+      </label>
+
+      <label class="checkbox-label">
+        <input type="checkbox" ng-model="settings.publicVisibility">
+        <div>
+          <strong>Public Profile Visibility</strong>
+          <p style="font-size: 0.82rem; color: var(--text-muted);">Allow other campus students to see items listed under your name.</p>
+        </div>
+      </label>
+    </div>
+
+    <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end;">
+      <button class="btn btn-primary" ng-click="saveSettings()">Save Preferences</button>
+    </div>
+  </div>
+</div>

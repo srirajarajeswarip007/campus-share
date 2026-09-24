@@ -1,0 +1,53 @@
+<div class="auth-split-container">
+  <!-- Sidebar Banner -->
+  <div class="auth-sidebar-banner">
+    <div style="margin-bottom: 2rem;">
+      <i class="fa-solid fa-shield-halved" style="font-size: 3.5rem; color: #ffffff;"></i>
+    </div>
+    <h2 style="font-size: 2rem; font-weight: 800; margin-bottom: 1rem; color: #ffffff;">Academic Stewardship</h2>
+    <p style="font-size: 0.95rem; color: #cbd5e1; line-height: 1.6;">Join over 3,200+ students sharing research, borrowing lab gear, and preserving campus assets.</p>
+  </div>
+
+  <!-- Form Section -->
+  <div class="auth-form-wrap">
+    <div class="welcome-banner" style="margin-bottom: 2rem;">
+      <h2 style="font-size: 1.8rem; font-weight: 800; color: var(--text-dark); margin-bottom: 0.35rem;">Welcome Back!</h2>
+      <p style="font-size: 0.9rem; color: var(--text-muted);">Log in to access and manage your resource allocations.</p>
+    </div>
+
+    <div ng-if="errorMessage" class="badge badge-damaged" style="width: 100%; padding: 0.75rem 1rem; margin-bottom: 1.25rem; font-size: 0.88rem; justify-content: flex-start;">
+      <i class="fa-solid fa-circle-exclamation"></i>
+      <span>{{errorMessage}}</span>
+    </div>
+
+    <form ng-submit="login()">
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" class="form-control" ng-model="loginData.email" placeholder="student@campus.edu" required>
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" class="form-control" ng-model="loginData.password" placeholder="••••••••" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;" ng-disabled="isLoading">
+        <span ng-if="!isLoading">Log In</span>
+        <span ng-if="isLoading"><i class="fa-solid fa-spinner fa-spin"></i> Authenticating...</span>
+      </button>
+    </form>
+
+    <!-- Quick Demo Accounts Trigger -->
+    <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); text-align: center;">
+      <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">Instant Demo Accounts:</p>
+      <div style="display: flex; gap: 0.5rem; justify-content: center;">
+        <button class="btn btn-secondary btn-sm" ng-click="demoLogin('Student')"><i class="fa-solid fa-user-graduate"></i> Demo Student</button>
+        <button class="btn btn-secondary btn-sm" ng-click="demoLogin('Admin')"><i class="fa-solid fa-user-shield"></i> Demo Admin</button>
+      </div>
+    </div>
+
+    <p style="text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-top: 1.5rem;">
+      Don't have an account? <a href="#!/register" style="font-weight: 700;">Register Here</a>
+    </p>
+  </div>
+</div>

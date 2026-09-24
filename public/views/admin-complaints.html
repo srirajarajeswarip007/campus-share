@@ -1,0 +1,100 @@
+<div class="admin-complaints-view" ng-controller="ComplaintController">
+  <div style="margin-bottom: 1.5rem;">
+    <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--text-dark);">Reports & Compliance Board</h2>
+    <p style="font-size: 0.88rem; color: var(--text-muted);">Manage damage reports, late return disputes, and resource misuse logs.</p>
+  </div>
+
+  <!-- Complaint Counter Boxes -->
+  <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 2rem;">
+    <div class="stat-card" style="border-left: 4px solid #ef4444;">
+      <div class="stat-info">
+        <h3>{{complaints.length || 0}}</h3>
+        <p>TOTAL ISSUES</p>
+      </div>
+      <div class="stat-icon red"><i class="fa-solid fa-triangle-exclamation"></i></div>
+    </div>
+
+    <div class="stat-card" style="border-left: 4px solid #f59e0b;">
+      <div class="stat-info">
+        <h3>{{(complaints | filter:{status:'Under Review'}).length || 0}}</h3>
+        <p>UNDER REVIEW</p>
+      </div>
+      <div class="stat-icon amber"><i class="fa-solid fa-magnifying-glass"></i></div>
+    </div>
+
+    <div class="stat-card" style="border-left: 4px solid #10b981;">
+      <div class="stat-info">
+        <h3>{{(complaints | filter:{status:'Resolved'}).length || 0}}</h3>
+        <p>RESOLVED</p>
+      </div>
+      <div class="stat-icon green"><i class="fa-solid fa-circle-check"></i></div>
+    </div>
+  </div>
+
+  <!-- Complaints List -->
+  <div class="card" ng-repeat="c in complaints" style="margin-bottom: 1.25rem;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+      <div>
+        <span class="badge badge-damaged" style="margin-bottom: 0.35rem;">{{c.category}}</span>
+        <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-dark);">{{c.title}}</h3>
+        <div style="font-size: 0.82rem; color: var(--text-muted);">
+          Reported by: <strong>{{c.reporterName}}</strong> &bull; Resource: <strong>{{c.resourceName}}</strong> &bull; {{c.createdAt | date:'mediumDate'}}
+        </div>
+      </div>
+
+      <span class="badge" ng-class="{
+        'badge-pending': c.status === 'Pending',
+        'badge-under-review': c.status === 'Under Review',
+        'badge-resolved': c.status === 'Resolved'
+      }">{{c.status}}</span>
+    </div>
+
+    <p style="font-size: 0.9rem; color: var(--text-dark); background: #f8fafc; padding: 1rem; border-radius: var(--radius-sm); margin-bottom: 1rem; border: 1px solid var(--border-color);">
+      {{c.description}}
+    </p>
+
+    <div ng-if="c.actionNotes" style="font-size: 0.85rem; color: var(--primary); margin-bottom: 1rem; background: var(--primary-light); padding: 0.75rem 1rem; border-radius: var(--radius-sm);">
+      <strong><i class="fa-solid fa-clipboard-check"></i> Admin Notes:</strong> {{c.actionNotes}}
+    </div>
+
+    <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+      <button class="btn btn-secondary btn-sm" ng-click="openDetailModal(c)">
+        <i class="fa-solid fa-pen-to-square"></i> Update Status & Notes
+      </button>
+    </div>
+  </div>
+
+  <!-- UPDATE COMPLAINT MODAL -->
+  <div class="modal-overlay" ng-if="showDetailModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-gavel" style="color: var(--primary); margin-right: 0.5rem;"></i> Update Compliance Case</h3>
+        <button ng-click="closeDetailModal()" style="background: none; font-size: 1.2rem; color: var(--text-muted);"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="modal-body">
+        <h4>{{selectedComplaint.title}}</h4>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">Reported by {{selectedComplaint.reporterName}} for {{selectedComplaint.resourceName}}</p>
+
+        <div class="form-group">
+          <label>Case Status</label>
+          <select class="form-control" ng-model="selectedComplaint.status">
+            <option value="Pending">Pending</option>
+            <option value="Under Review">Under Review</option>
+            <option value="Resolved">Resolved</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Admin Action Notes</label>
+          <textarea class="form-control" ng-model="selectedComplaint.actionNotes" rows="3" placeholder="Enter findings, user warnings, fine assessments, or resolution notes..."></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" ng-click="closeDetailModal()">Cancel</button>
+          <button type="button" class="btn btn-primary" ng-click="updateComplaintStatus(selectedComplaint.status)">Save Status</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
