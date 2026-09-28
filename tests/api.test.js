@@ -45,7 +45,7 @@ async function testValidLogin() {
     { host: HOST, port: PORT, path: '/api/auth/login', method: 'POST', headers: { 'Content-Type': 'application/json' } },
     { email: 'student@campus.edu', password: 'student123' }
   );
-  assert.strictEqual(res.status, 999, 'INTENTIONAL FAIL - for lab demo');
+  assert.strictEqual(res.status, 200, 'Valid login should return HTTP 200');
   assert.ok(res.body.token, 'Login response should contain a JWT token');
   assert.ok(res.body.user, 'Login response should contain a user object');
   assert.strictEqual(res.body.user.role, 'Student', 'Logged in user role should be Student');
