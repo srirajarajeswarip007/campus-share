@@ -62,11 +62,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Trigger Render Deploy Hook
-        # Replace RENDER_DEPLOY_HOOK_URL with your actual Render deploy hook secret
+      - name: Deploy Application
         run: |
-          echo "Deployment triggered successfully!"
-          echo "In a real deployment, this step would call:"
-          echo "curl -X POST \${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
-        # Uncomment the line below once you have your Render deploy hook URL saved as a GitHub Secret:
-        # run: curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
+          echo "============================================"
+          echo "  CI passed. Starting deployment..."
+          echo "============================================"
+          echo "  App: CampusShare MEAN Stack"
+          echo "  Branch: $GITHUB_REF_NAME"
+          echo "  Commit: $GITHUB_SHA"
+          echo "  Triggered by: $GITHUB_ACTOR"
+          echo "============================================"
+          echo "  Deployment simulation complete!"
+          echo "  In production, replace this step with:"
+          echo "  curl -X POST YOUR_RENDER_DEPLOY_HOOK_URL"
+          echo "============================================"
